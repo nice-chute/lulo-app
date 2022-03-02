@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+
+    background-color: #bcfd49;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.min-w-450 {
+  min-width: 450px;
+}
+
+.text-color-green {
+  color:#bcfd49;
+}
+
+.hot-pink-button {
+  background: linear-gradient(to right, #f953c6, #b91d73);
+}
+
+.hot-pink-button:hover {
+  opacity: 50%;
+}
+
+.hot-pink-gradient {
+  background: linear-gradient(to right, #f953c6, #b91d73);
+}
+
+.hot-pink-hover {
+  background:black;
+}
+
+.hot-pink-hover:hover {
+  background: linear-gradient(to right, #f953c6, #b91d73);
+}
+
+.badge-pink{
+  background: linear-gradient(to right, #f953c6, #b91d73);
+}
+
+.badge-green {
+  background: linear-gradient(to right, #56ab2f, #a8e063);
+}
+
+.badge-blue {
+  background: linear-gradient(to right, #396afc, #2948ff);
+}
+
+.badge-yellow {
+  background: linear-gradient(to right, #fdc830, #f37335);
+
+}
+
+/* example: override wallet button style */
+.wallet-adapter-button:not([disabled]):hover {
+  background-color: #707070;
+}
