@@ -1,6 +1,10 @@
-import { FC, useCallback } from "react";
+import { FC, useCallback, useState } from "react";
 import { notify } from "../../utils/notifications";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import {
+  useAnchorWallet,
+  useConnection,
+  useWallet,
+} from "@solana/wallet-adapter-react";
 import { SendTransaction } from "../../components/SendTransaction";
 import { Program, Provider, BN } from "@project-serum/anchor";
 import * as anchor from "@project-serum/anchor";
@@ -17,47 +21,108 @@ import {
   opts,
   TOKEN_PROGRAM_ID,
   SYSVAR_RENT_PUBKEY,
+  NATIVE_MINT,
 } from "../../models/constants";
 import idl from "../../utils/idl.json";
 
 export const CreateView: FC = ({}) => {
+  const programId = new PublicKey(idl.metadata.address);
   const { connection } = useConnection();
-  const { publicKey, sendTransaction, wallet } = useWallet();
+  const wallet = useAnchorWallet();
 
   const provider = new Provider(connection, wallet, opts.preflightCommitment);
-  const program = new Program(idl, programID, provider);
+  const program = new Program(idl, programId, provider);
 
-  // Params
-  const fee = new BN(2);
-  const feeScalar = new BN(1000);
+  // State
+  const [addr, setAddr] = useState("");
+  const [amount, setAmount] = useState(0);
+  const [date, setDate] = useState("");
+
+  // Input values for contract params
+  const getAddressValue = (event) => {
+    let input = event.target.value;
+    setAddr(input);
+  };
+
+  const getAmountValue = (event) => {
+    let input = event.target.value;
+    setAmount(input);
+  };
+
+  const getDateValue = (event) => {
+    let input = event.target.value;
+    setDate(input);
+  };
 
   const onClick = useCallback(async () => {
-    if (!publicKey) {
+    if (!wallet.publicKey) {
       notify({ type: "error", message: `Wallet not connected!` });
       console.log("error", `Send Transaction: Wallet not connected!`);
       return;
     }
 
-    // State PDA
-    let [state, stateBump] = await PublicKey.findProgramAddress(
-      [Buffer.from(anchor.utils.bytes.utf8.encode("state"))],
-      program.programId
-    );
-
     let signature: TransactionSignature = "";
+
     try {
-      const transaction = await program.transaction.initialize(fee, feeScalar, {
+      // Addr to Pubkey
+      let addrKey = new PublicKey(addr);
+      // Amount to BN
+      let amountDue = new BN(amount);
+      // Date to BN
+      let dueDate = new anchor.BN(Math.floor(new Date(date).getTime() / 1000));
+
+      // Contract address
+      let contract = Keypair.generate();
+      let mintAccount = Keypair.generate();
+
+      // State PDA
+      let [state, stateBump] = await PublicKey.findProgramAddress(
+        [Buffer.from(anchor.utils.bytes.utf8.encode("state"))],
+        program.programId
+      );
+
+      // Vault PDA
+      let [vault, vaultBump] = await PublicKey.findProgramAddress(
+        [
+          Buffer.from(anchor.utils.bytes.utf8.encode("vault")),
+          NATIVE_MINT.toBuffer(),
+        ],
+        program.programId
+      );
+
+      // Receivable mint PDA
+      let [mint, mintBump] = await PublicKey.findProgramAddress(
+        [
+          Buffer.from(anchor.utils.bytes.utf8.encode("mint")),
+          contract.publicKey.toBuffer(),
+        ],
+        program.programId
+      );
+
+      // Transaction to create contract
+      signature = await program.rpc.create(amountDue, dueDate, {
         accounts: {
-          signer: publicKey,
-          state: state,
+          signer: wallet.publicKey,
+          contract: contract.publicKey,
+          mint: mint,
+          mintAccount: mintAccount.publicKey,
+          payMint: NATIVE_MINT,
+          vault: vault,
+          recipient: addrKey,
           systemProgram: SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
           rent: SYSVAR_RENT_PUBKEY,
         },
-        signers: [],
+        signers: [contract, mintAccount],
       });
-      signature = await sendTransaction(transaction, connection);
-      // await connection.confirmTransaction(signature, "processed");
+
+      // signature = await sendTransaction(transaction, connection);
+      await connection.confirmTransaction(signature, "processed");
+      console.log(contract.publicKey.toBase58());
+      console.log(mintAccount.publicKey.toBase58());
+      setAmount(0);
+      setDate("");
+      setAddr("");
       notify({
         type: "success",
         message: "Transaction successful!",
@@ -70,16 +135,17 @@ export const CreateView: FC = ({}) => {
         description: error?.message,
         txid: signature,
       });
+      // console.log(error);
       console.log("error", `Transaction failed! ${error?.message}`, signature);
       return;
     }
-  }, [publicKey, notify, connection, sendTransaction]);
+  }, [wallet, notify, connection, addr, date, amount]);
 
   return (
     <div className="hero mx-auto p-4 min-h-16 py-4 w-full">
       <div className="hero-content flex flex-col">
         <h4 className="w-full max-w-md mx-auto text-center text-2xl text-black">
-          <p>Create new contract</p>
+          <p>Create a new invoice</p>
         </h4>
         <div className="p-2 text-center min-w-full">
           <div>
@@ -90,7 +156,9 @@ export const CreateView: FC = ({}) => {
                 </span>
                 <input
                   type="text"
+                  onChange={getAddressValue}
                   placeholder="Gpqo...RJbs"
+                  value={addr}
                   className="input bg-black"
                 ></input>
               </label>
@@ -100,7 +168,9 @@ export const CreateView: FC = ({}) => {
                 </span>
                 <input
                   type="number"
+                  onChange={getAmountValue}
                   placeholder="0 SOL"
+                  value={amount}
                   className="input bg-black"
                 ></input>
               </label>
@@ -108,15 +178,20 @@ export const CreateView: FC = ({}) => {
                 <span className="bg-black text-white font-bold text-center">
                   Due Date
                 </span>
-                <input type="date" className="input bg-black"></input>
+                <input
+                  type="date"
+                  value={date}
+                  onChange={getDateValue}
+                  className="input bg-black"
+                ></input>
               </label>
             </div>
           </div>
           <div>
             <button
-              className="btn m-2 hot-pink-gradient hover:brightness-125"
+              className="btn m-2 bg-black text-color-green hover:brightness-125"
               onClick={onClick}
-              disabled={!publicKey}
+              disabled={!wallet}
             >
               <span> Send contract </span>
             </button>

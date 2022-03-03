@@ -92,7 +92,12 @@
           "isSigner": true
         },
         {
-          "name": "receivable",
+          "name": "recipient",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "contract",
           "isMut": true,
           "isSigner": true
         },
@@ -136,11 +141,15 @@
         {
           "name": "amountDue",
           "type": "u64"
+        },
+        {
+          "name": "dueDate",
+          "type": "i64"
         }
       ]
     },
     {
-      "name": "sign",
+      "name": "setApprover",
       "accounts": [
         {
           "name": "signer",
@@ -148,7 +157,43 @@
           "isSigner": true
         },
         {
-          "name": "receivable",
+          "name": "delegate",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "approver",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "approve",
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "contract",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "approver",
           "isMut": true,
           "isSigner": false
         }
@@ -169,7 +214,7 @@
           "isSigner": false
         },
         {
-          "name": "receivable",
+          "name": "contract",
           "isMut": true,
           "isSigner": false
         },
@@ -210,7 +255,7 @@
           "isSigner": false
         },
         {
-          "name": "receivable",
+          "name": "contract",
           "isMut": true,
           "isSigner": false
         },
@@ -255,12 +300,20 @@
   ],
   "accounts": [
     {
-      "name": "Receivable",
+      "name": "Contract",
       "type": {
         "kind": "struct",
         "fields": [
           {
+            "name": "recipient",
+            "type": "publicKey"
+          },
+          {
             "name": "mint",
+            "type": "publicKey"
+          },
+          {
+            "name": "payMint",
             "type": "publicKey"
           },
           {
@@ -268,8 +321,8 @@
             "type": "u64"
           },
           {
-            "name": "payMint",
-            "type": "publicKey"
+            "name": "dueDate",
+            "type": "i64"
           },
           {
             "name": "creator",
@@ -284,20 +337,60 @@
             "type": "u64"
           },
           {
-            "name": "signer",
+            "name": "approver",
             "type": "publicKey"
           },
           {
-            "name": "signTs",
+            "name": "approveTs",
             "type": "i64"
           },
           {
-            "name": "signSlot",
+            "name": "approveSlot",
             "type": "u64"
           },
           {
             "name": "paid",
             "type": "bool"
+          },
+          {
+            "name": "payer",
+            "type": "publicKey"
+          },
+          {
+            "name": "payTs",
+            "type": "i64"
+          },
+          {
+            "name": "paySlot",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Approver",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "publicKey"
+          },
+          {
+            "name": "key",
+            "type": "publicKey"
+          },
+          {
+            "name": "balance",
+            "type": "u64"
+          },
+          {
+            "name": "budget",
+            "type": "u64"
+          },
+          {
+            "name": "budgetMint",
+            "type": "publicKey"
           }
         ]
       }
@@ -321,6 +414,23 @@
           }
         ]
       }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "ExistingApproval",
+      "msg": "Contract is already approved"
+    },
+    {
+      "code": 6001,
+      "name": "UnauthorizedApprover",
+      "msg": "Not an authorized approver"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidDueDate",
+      "msg": "Due date must be in the future"
     }
   ],
   "metadata": {
