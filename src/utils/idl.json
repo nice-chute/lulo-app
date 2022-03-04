@@ -349,8 +349,8 @@
             "type": "u64"
           },
           {
-            "name": "paid",
-            "type": "bool"
+            "name": "status",
+            "type": "u64"
           },
           {
             "name": "payer",

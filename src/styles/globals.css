@@ -21,12 +21,20 @@ a {
   box-sizing: border-box;
 }
 
+.table {
+  border-spacing: 3px;
+}
+
 .min-w-450 {
   min-width: 450px;
 }
 
 .text-color-green {
   color:#bcfd49;
+}
+
+.border-color-green {
+  border-color: #bcfd49;
 }
 
 .hot-pink-button {
