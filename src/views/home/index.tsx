@@ -3,7 +3,11 @@ import { FC, useEffect, useState } from "react";
 import Link from "next/link";
 
 // Wallet
-import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import {
+  useWallet,
+  useAnchorWallet,
+  useConnection,
+} from "@solana/wallet-adapter-react";
 
 // Components
 import { RequestAirdrop } from "../../components/RequestAirdrop";
@@ -36,7 +40,7 @@ export const HomeView: FC = ({}) => {
           </span>
         </h1>
         <h4 className="w-full max-w-md mx-auto text-center text-2xl text-black">
-          <p>A better way to invoice.</p>
+          <p>Invoice trading platform</p>
         </h4>
         <div>
           <div className="mockup-code w-full bg-black m-0 pl-2 pr-16">
@@ -58,9 +62,8 @@ export const HomeView: FC = ({}) => {
               </code>
             </pre>
             <div className="flex justify-center w-full mt-3">
-              <div className="m-1.5 p-4 badge badge-pink">Unpaid</div>
-              <div className="m-1.5 p-4 badge badge-blue">Approved</div>
-              <div className="m-1.5 p-4 badge badge-yellow">0% Interest</div>
+              <div className="m-1.5 p-4 badge badge-red">Sell</div>
+              <div className="m-1.5 p-4 badge badge-solid-green">Buy</div>
             </div>
           </div>
         </div>

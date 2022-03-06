@@ -57,6 +57,14 @@ a {
   background: linear-gradient(to right, #f953c6, #b91d73);
 }
 
+.badge-red{
+  background:red;
+}
+
+.badge-solid-green{
+  background:green;
+}
+
 .badge-pink{
   background: linear-gradient(to right, #f953c6, #b91d73);
 }

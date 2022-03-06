@@ -28,7 +28,7 @@ import idl from "../../utils/idl.json";
 export const CreateView: FC = ({}) => {
   const programId = new PublicKey(idl.metadata.address);
   const { connection } = useConnection();
-  const wallet = useAnchorWallet();
+  const wallet = useWallet();
 
   const provider = new Provider(connection, wallet, opts.preflightCommitment);
   const program = new Program(idl, programId, provider);
@@ -67,7 +67,7 @@ export const CreateView: FC = ({}) => {
       // Addr to Pubkey
       let addrKey = new PublicKey(addr);
       // Amount to BN
-      let amountDue = new BN(amount);
+      let amountDue = new BN(amount * LAMPORTS_PER_SOL);
       // Date to BN
       let dueDate = new anchor.BN(Math.floor(new Date(date).getTime() / 1000));
 
@@ -168,6 +168,7 @@ export const CreateView: FC = ({}) => {
                 </span>
                 <input
                   type="number"
+                  step="any"
                   onChange={getAmountValue}
                   placeholder="0 SOL"
                   value={amount}

@@ -27,11 +27,10 @@ const useUserContractStore = create<UserContractStore>((set, _get) => ({
         //console.log(account.pubkey.toBase58());
         try {
           let contract = await program.account.contract.fetch(account.pubkey);
-          contracts.push(contract);
+          contracts.push({ pubkey: account.pubkey, contract: contract });
         } catch (error) {}
       }
     } catch (e) {}
-
     set((state) => {
       state.contracts = contracts;
       console.log(`contracts updated, `, contracts);
