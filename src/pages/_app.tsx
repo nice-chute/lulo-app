@@ -17,7 +17,7 @@ const App: FC<AppProps> = ({ Component, pageProps }) => {
         <title>Lulo</title>
       </Head>
       <ContextProvider>
-        <div className="flex flex-col h-screen">
+        <div className="flex flex-col min-h-screen">
           <Notifications />
           <AppBar />
           <ContentContainer>
