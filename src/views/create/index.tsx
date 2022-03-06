@@ -150,7 +150,7 @@ export const CreateView: FC = ({}) => {
         <div className="p-2 text-center min-w-full">
           <div>
             <div className="form-control">
-              <label className="input-group input-group-vertical m-1 bg-black rounded-lg min-w-450">
+              <label className="input-group input-group-vertical m-2 bg-black shadow-lg shadow-black rounded-lg min-w-450">
                 <span className="bg-black border-b-fuchsia-600 text-white font-bold">
                   Payer
                 </span>
@@ -162,9 +162,9 @@ export const CreateView: FC = ({}) => {
                   className="input bg-black"
                 ></input>
               </label>
-              <label className="input-group input-group-vertical m-1 bg-black rounded-lg">
+              <label className="input-group input-group-vertical m-2 shadow-lg shadow-black bg-black rounded-lg">
                 <span className="bg-black text-white font-bold text-center">
-                  Amount Due (Devnet)
+                  Amount Due
                 </span>
                 <input
                   type="number"
@@ -175,7 +175,7 @@ export const CreateView: FC = ({}) => {
                   className="input bg-black"
                 ></input>
               </label>
-              <label className="input-group input-group-vertical m-1 bg-black rounded-lg">
+              <label className="input-group input-group-vertical m-2 shadow-lg shadow-black bg-black rounded-lg">
                 <span className="bg-black text-white font-bold text-center">
                   Due Date
                 </span>
@@ -190,7 +190,7 @@ export const CreateView: FC = ({}) => {
           </div>
           <div>
             <button
-              className="btn m-2 bg-black text-color-green hover:brightness-125"
+              className="btn m-2 bg-black shadow-lg shadow-black text-color-green hover:brightness-125"
               onClick={onClick}
               disabled={!wallet}
             >

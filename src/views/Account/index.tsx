@@ -55,6 +55,35 @@ export const AccountView: FC = ({}) => {
     }
   }, [wallet, connection, getUserContracts]);
 
+  const ContractStatusBadge = ({ contract }) => {
+    // Created, unapproved
+    if (contract.contract.status == 0) {
+      return (
+        <div className="flex justify-center w-full mt-3">
+          <div className="m-1.5 p-4 badge badge-red">Not approved</div>
+        </div>
+      );
+    }
+    // Approved
+    else if (contract.contract.status == 1) {
+      return (
+        <div className="flex justify-center w-full mt-3">
+          <div className="m-1.5 p-4 badge badge-blue">Approved</div>
+        </div>
+      );
+    }
+    // Paid
+    else if (contract.contract.status == 2) {
+      return (
+        <div className="flex justify-center w-full mt-3">
+          <div className="m-1.5 p-4 badge badge-solid-green">Paid</div>
+        </div>
+      );
+    } else {
+      return null;
+    }
+  };
+
   const ActionButton = ({ contract }) => {
     const approveContract = useCallback(async () => {
       if (!wallet.publicKey) {
@@ -207,10 +236,8 @@ export const AccountView: FC = ({}) => {
           wallet.publicKey, // owner
           contract.contract.payMint // mint
         );
-        // sync wrapped SOL balance
-        let tx3 = createSyncNativeInstruction(ata);
         // Create account
-        ix = [tx, tx3];
+        ix = [tx];
       }
 
       // Vault PDA
@@ -318,49 +345,84 @@ export const AccountView: FC = ({}) => {
 
   return (
     <div className="hero mx-auto p-4 min-h-16 py-4">
-      <div className="hero-content flex flex-col max-w-lg">
+      <div className="hero-content flex flex-col">
         <h4 className="-full max-w-md mx-auto text-center text-2xl text-black">
           <p>Account Overview</p>
         </h4>
-        <div className="overflow-x-auto">
-          <table className="p-4 m-4 table table-auto bg-black border-collapse">
-            <thead>
-              <tr className="bg-black">
-                <th className="bg-black">Id</th>
-                <th className="bg-black">Amount due</th>
-                <th className="bg-black">Status</th>
-                <th className="bg-black">Due date</th>
-                <th className="bg-black"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {contracts.map((contract, index) => {
-                return (
-                  <tr key={contract.contract.mint.toBase58()}>
-                    <td className="bg-black border-none">
-                      {shortAddr(contract.contract.mint.toBase58())}
-                    </td>
-                    <td className="bg-black border-none">
-                      {contract.contract.amountDue.toNumber() /
-                        LAMPORTS_PER_SOL}{" "}
-                      SOL
-                    </td>
-                    <td className="bg-black border-none">
-                      {contract.contract.status.toString()}
-                    </td>
-                    <td className="bg-black border-none">
-                      {new Date(
-                        contract.contract.dueDate * 1000
-                      ).toLocaleDateString()}
-                    </td>
-                    <td className="bg-black border-none">
-                      <ActionButton contract={contract}></ActionButton>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+        <div className="flex flex-wrap w-full">
+          {contracts.map((contract, index) => {
+            return (
+              <div
+                key={index}
+                className="card w-64 m-2 bg-black shadow-xl shadow-black"
+              >
+                <div className="card-body">
+                  <h2 className="card-title mb-5">
+                    <a
+                      href={
+                        "https://explorer.solana.com/address/" +
+                        contract.pubkey.toString() +
+                        "?cluster=devnet"
+                      }
+                    >
+                      {shortAddr(contract.pubkey.toString())}
+                    </a>
+                    <span className="inline-block ml-2 align-text-bottom">
+                      <a
+                        href={
+                          "https://explorer.solana.com/address/" +
+                          contract.pubkey.toString() +
+                          "?cluster=devnet"
+                        }
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                          />
+                        </svg>
+                      </a>
+                    </span>
+                  </h2>
+                  <p className="">
+                    <span className="text-fuchsia-500">Creator:</span>{" "}
+                    {shortAddr(contract.contract.creator.toString())}
+                  </p>
+                  <p className="">
+                    <span className="text-fuchsia-500">Amount due:</span>{" "}
+                    {contract.contract.amountDue.toNumber() / LAMPORTS_PER_SOL}{" "}
+                    SOL
+                  </p>
+                  <p className="">
+                    <span className="text-fuchsia-500">Due date:</span>{" "}
+                    {new Date(
+                      contract.contract.dueDate * 1000
+                    ).toLocaleDateString()}
+                  </p>
+                  <p className="">
+                    <span className="text-fuchsia-500">Payer:</span>{" "}
+                    {shortAddr(contract.contract.recipient.toString())}
+                  </p>
+                  <div>
+                    <ContractStatusBadge
+                      contract={contract}
+                    ></ContractStatusBadge>
+                  </div>
+                  <div className="flex flex-wrap justify-end mt-4">
+                    <ActionButton contract={contract}></ActionButton>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
