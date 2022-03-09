@@ -5,7 +5,6 @@ import {
   useConnection,
   useWallet,
 } from "@solana/wallet-adapter-react";
-import { SendTransaction } from "../../components/SendTransaction";
 import { Program, Provider, BN } from "@project-serum/anchor";
 import * as anchor from "@project-serum/anchor";
 import {
@@ -15,6 +14,7 @@ import {
   Transaction,
   PublicKey,
   TransactionSignature,
+  ConfirmOptions,
 } from "@solana/web3.js";
 import {
   programID,
@@ -23,15 +23,19 @@ import {
   SYSVAR_RENT_PUBKEY,
   NATIVE_MINT,
 } from "../../models/constants";
-import idl from "../../utils/idl.json";
+import luloIdl from "../../utils/lulo.json";
 
 export const CreateView: FC = ({}) => {
-  const programId = new PublicKey(idl.metadata.address);
+  const programId = new PublicKey(luloIdl.metadata.address);
   const { connection } = useConnection();
   const wallet = useWallet();
 
-  const provider = new Provider(connection, wallet, opts.preflightCommitment);
-  const program = new Program(idl, programId, provider);
+  const provider = new Provider(
+    connection,
+    wallet,
+    opts.preflightCommitment as ConfirmOptions
+  );
+  const program = new Program(luloIdl as anchor.Idl, programId, provider);
 
   // State
   const [addr, setAddr] = useState("");

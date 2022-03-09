@@ -1,6 +1,5 @@
 import create, { State } from "zustand";
 import { Connection, PublicKey } from "@solana/web3.js";
-import idl from "../utils/idl.json";
 import { Program } from "@project-serum/anchor";
 
 interface UserContractStore extends State {

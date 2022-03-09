@@ -11,7 +11,8 @@ import useUserContractStore from "../../stores/useUserContractStore";
 import { opts } from "../../models/constants";
 // Anchor + Web3
 import { Program, Provider, BN } from "@project-serum/anchor";
-import idl from "../../utils/idl.json";
+import luloIdl from "../../utils/lulo.json";
+import dexIdl from "../../utils/dex.json";
 import {
   PublicKey,
   TransactionSignature,
@@ -19,6 +20,8 @@ import {
   SystemProgram,
   Transaction,
   LAMPORTS_PER_SOL,
+  Commitment,
+  ConfirmOptions,
 } from "@solana/web3.js";
 import * as anchor from "@project-serum/anchor";
 import {
@@ -38,12 +41,18 @@ import {
 import { notify } from "../../utils/notifications";
 
 export const AccountView: FC = ({}) => {
-  const programId = new PublicKey(idl.metadata.address);
+  const programId = new PublicKey(luloIdl.metadata.address);
+  const dexProgramId = new PublicKey(dexIdl.metadata.address);
   const { connection } = useConnection();
   const wallet = useWallet();
 
-  const provider = new Provider(connection, wallet, opts.preflightCommitment);
-  const program = new Program(idl, programId, provider);
+  const provider = new Provider(
+    connection,
+    wallet,
+    opts.preflightCommitment as ConfirmOptions
+  );
+  const program = new Program(luloIdl as anchor.Idl, programId, provider);
+  const dexProgram = new Program(dexIdl as anchor.Idl, dexProgramId, provider);
 
   const contracts = useUserContractStore((s) => s.contracts);
   const { getUserContracts } = useUserContractStore();
@@ -82,6 +91,106 @@ export const AccountView: FC = ({}) => {
     } else {
       return null;
     }
+  };
+
+  const SellButton = ({ contract }) => {
+    const sellContract = useCallback(async () => {
+      if (!wallet.publicKey) {
+        notify({ type: "error", message: `Wallet not connected!` });
+        console.log("error", `Send Transaction: Wallet not connected!`);
+        return;
+      }
+
+      let signature: TransactionSignature = "";
+
+      try {
+        const ask = new anchor.BN(0.1 * LAMPORTS_PER_SOL);
+        let nftMint = contract.contract.mint;
+        // Listing PDA
+        let [listing, listingBump] = await PublicKey.findProgramAddress(
+          [
+            Buffer.from(anchor.utils.bytes.utf8.encode("listing")),
+            nftMint.toBuffer(),
+            wallet.publicKey.toBuffer(),
+          ],
+          dexProgram.programId
+        );
+        // NFT vault PDA
+        let [nftVault, nftVaultBump] = await PublicKey.findProgramAddress(
+          [
+            Buffer.from(anchor.utils.bytes.utf8.encode("vault")),
+            nftMint.toBuffer(),
+          ],
+          dexProgram.programId
+        );
+        // Seller escrow PDA
+        let [sellerEscrow, sellerEscrowBump] =
+          await PublicKey.findProgramAddress(
+            [
+              Buffer.from(anchor.utils.bytes.utf8.encode("escrow")),
+              wallet.publicKey.toBuffer(),
+              NATIVE_MINT.toBuffer(),
+            ],
+            dexProgram.programId
+          );
+
+        let response = await connection.getParsedTokenAccountsByOwner(
+          wallet.publicKey,
+          {
+            mint: nftMint,
+          }
+        );
+        let sellerNft = response.value[0].pubkey;
+
+        signature = await dexProgram.rpc.list(ask, {
+          accounts: {
+            signer: wallet.publicKey,
+            listing: listing,
+            sellerNft: sellerNft,
+            nftVault: nftVault,
+            nftMint: nftMint,
+            sellerEscrow: sellerEscrow,
+            askMint: NATIVE_MINT,
+            systemProgram: SystemProgram.programId,
+            tokenProgram: TOKEN_PROGRAM_ID,
+            rent: SYSVAR_RENT_PUBKEY,
+          },
+          signers: [],
+        });
+
+        await connection.confirmTransaction(signature, "processed");
+        getUserContracts(wallet.publicKey, connection, program);
+        notify({
+          type: "success",
+          message: "Transaction successful!",
+          txid: signature,
+        });
+      } catch (error) {
+        notify({
+          type: "error",
+          message: `Transaction failed!`,
+          description: error?.message,
+          txid: signature,
+        });
+        // console.log(error);
+        console.log(
+          "error",
+          `Transaction failed! ${error?.message}`,
+          signature
+        );
+        return;
+      }
+      console.log("click");
+    }, [wallet, notify, connection]);
+
+    return (
+      <button
+        className="bg-black text-color-green font-bold"
+        onClick={sellContract}
+      >
+        Sell Contract{" "}
+      </button>
+    );
   };
 
   const ActionButton = ({ contract }) => {
@@ -393,22 +502,22 @@ export const AccountView: FC = ({}) => {
                     </span>
                   </h2>
                   <p className="">
-                    <span className="text-fuchsia-500">Creator:</span>{" "}
+                    <span className="neon-pink">Creator:</span>{" "}
                     {shortAddr(contract.contract.creator.toString())}
                   </p>
                   <p className="">
-                    <span className="text-fuchsia-500">Amount due:</span>{" "}
+                    <span className="neon-pink">Amount due:</span>{" "}
                     {contract.contract.amountDue.toNumber() / LAMPORTS_PER_SOL}{" "}
                     SOL
                   </p>
                   <p className="">
-                    <span className="text-fuchsia-500">Due date:</span>{" "}
+                    <span className="neon-pink">Due date:</span>{" "}
                     {new Date(
                       contract.contract.dueDate * 1000
                     ).toLocaleDateString()}
                   </p>
                   <p className="">
-                    <span className="text-fuchsia-500">Payer:</span>{" "}
+                    <span className="neon-pink">Payer:</span>{" "}
                     {shortAddr(contract.contract.recipient.toString())}
                   </p>
                   <div>
@@ -416,8 +525,9 @@ export const AccountView: FC = ({}) => {
                       contract={contract}
                     ></ContractStatusBadge>
                   </div>
-                  <div className="flex flex-wrap justify-end mt-4">
+                  <div className="flex flex-wrap justify-between mt-4">
                     <ActionButton contract={contract}></ActionButton>
+                    <SellButton contract={contract}></SellButton>
                   </div>
                 </div>
               </div>
