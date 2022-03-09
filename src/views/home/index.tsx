@@ -40,7 +40,7 @@ export const HomeView: FC = ({}) => {
           </span>
         </h1>
         <h4 className="w-full max-w-md mx-auto text-center text-2xl text-black">
-          <p>Invoice trading platform</p>
+          <p>Deferred Payments</p>
         </h4>
         <div>
           <div className="mockup-code w-full bg-black m-0 pl-2 pr-16">
