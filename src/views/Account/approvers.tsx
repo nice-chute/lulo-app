@@ -16,7 +16,7 @@ import pkg from "../../../package.json";
 // Store
 import useUserSOLBalanceStore from "../../stores/useUserSOLBalanceStore";
 
-export const HomeView: FC = ({}) => {
+export const ApproverView: FC = ({}) => {
   const wallet = useWallet();
   const { connection } = useConnection();
 
@@ -41,27 +41,6 @@ export const HomeView: FC = ({}) => {
         <h4 className="w-full max-w-md mx-auto text-center text-2xl text-black">
           <p>Crypto invoices</p>
         </h4>
-        <div>
-          <div className="mockup-code w-full bg-black m-0 pl-2 pr-16">
-            <pre data-prefix=">>">
-              <code>
-                <span className="text-color-green">amount_due:</span> 317.22
-                USDC
-              </code>
-            </pre>
-            <pre data-prefix=">>">
-              <code>
-                <span className="text-color-green">due_date:</span> 05/05/2022
-              </code>
-            </pre>
-            <pre data-prefix=">>">
-              <code>
-                <span className="text-color-green">approved_by:</span>{" "}
-                GpqocRBbRL9yr4AZHdhXxhGTGR4g9ibmA3agYFNqRJbs
-              </code>
-            </pre>
-          </div>
-        </div>
         <div>
           <RequestAirdrop />
         </div>

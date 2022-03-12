@@ -21,8 +21,19 @@ a {
   box-sizing: border-box;
 }
 
+.fancy-border {
+  border-image:   linear-gradient(to right, grey 25%, yellow 25%, yellow 50%,red 50%, red 75%, teal 75%) 5;
+  border: 5px;
+}
+
 .neon-pink {
-  color: #FF10F0;
+  color: #FF44CC;
+  filter: brightness(125%);
+  ;
+}
+
+.neon-blue {
+  color:#4666FF
 }
 
 .table {

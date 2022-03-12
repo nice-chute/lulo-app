@@ -7,26 +7,35 @@ interface DexListingStore extends State {
   getDexListings: (
     publicKey: PublicKey,
     connection: Connection,
-    program: Program
+    dexProgram: Program,
+    luloProgram: Program
   ) => void;
 }
 
 const useDexListingStore = create<DexListingStore>((set, _get) => ({
   listings: [],
-  getDexListings: async (publicKey, connection, program) => {
+  getDexListings: async (publicKey, connection, dexProgram, luloProgram) => {
     let listings: any[] = [];
     try {
       // Dex accounts
       let program_accounts = await connection.getParsedProgramAccounts(
-        program.programId
+        dexProgram.programId
       );
 
       for (let i = 0; program_accounts.length > i; i++) {
         let account = program_accounts[i];
-        console.log(account.pubkey.toBase58());
         try {
-          let listing = await program.account.listing.fetch(account.pubkey);
-          listings.push({ pubkey: account.pubkey, listing: listing });
+          let listing = await dexProgram.account.listing.fetch(account.pubkey);
+          let contract = await luloProgram.account.contract.fetch(
+            listing.contract
+          );
+          if (listing.active == true) {
+            listings.push({
+              pubkey: account.pubkey,
+              listing: listing,
+              contract: contract,
+            });
+          }
         } catch (error) {}
       }
     } catch (e) {}

@@ -1,6 +1,7 @@
 // React
 import { FC, useEffect, useState, useCallback } from "react";
 import Link from "next/link";
+import { opts } from "../../models/constants";
 
 // Wallet
 import {
@@ -9,8 +10,7 @@ import {
   useConnection,
 } from "@solana/wallet-adapter-react";
 // Store
-import useUserContractStore from "../../stores/useUserContractStore";
-import { opts } from "../../models/constants";
+import useUserOwnedContractStore from "../../stores/useUserOwnedContractsStore";
 // Anchor + Web3
 import { Program, Provider, BN } from "@project-serum/anchor";
 import luloIdl from "../../utils/lulo.json";
@@ -42,7 +42,7 @@ import {
 } from "../../models/constants";
 import { notify } from "../../utils/notifications";
 
-export const AccountView: FC = ({}) => {
+export const OwnedView: FC = ({}) => {
   const programId = new PublicKey(luloIdl.metadata.address);
   const dexProgramId = new PublicKey(dexIdl.metadata.address);
   const { connection } = useConnection();
@@ -56,14 +56,14 @@ export const AccountView: FC = ({}) => {
   const program = new Program(luloIdl as anchor.Idl, programId, provider);
   const dexProgram = new Program(dexIdl as anchor.Idl, dexProgramId, provider);
 
-  const contracts = useUserContractStore((s) => s.contracts);
-  const { getUserContracts } = useUserContractStore();
+  const contracts = useUserOwnedContractStore((s) => s.contracts);
+  const { getUserOwnedContracts } = useUserOwnedContractStore();
 
   useEffect(() => {
     if (wallet.publicKey) {
-      getUserContracts(wallet.publicKey, connection, program);
+      getUserOwnedContracts(wallet.publicKey, connection, program);
     }
-  }, [wallet, connection, getUserContracts]);
+  }, [wallet, connection, getUserOwnedContracts]);
 
   const ContractStatusBadge = ({ contract }) => {
     // Created, unapproved
@@ -158,7 +158,7 @@ export const AccountView: FC = ({}) => {
         });
 
         await connection.confirmTransaction(signature, "processed");
-        getUserContracts(wallet.publicKey, connection, program);
+        getUserOwnedContracts(wallet.publicKey, connection, program);
         notify({
           type: "success",
           message: "Transaction successful!",
@@ -192,138 +192,6 @@ export const AccountView: FC = ({}) => {
   };
 
   const ActionButton = ({ contract }) => {
-    const approveContract = useCallback(async () => {
-      if (!wallet.publicKey) {
-        notify({ type: "error", message: `Wallet not connected!` });
-        console.log("error", `Send Transaction: Wallet not connected!`);
-        return;
-      }
-
-      let signature: TransactionSignature = "";
-
-      try {
-        signature = await program.rpc.approve({
-          accounts: {
-            signer: wallet.publicKey,
-            contract: contract.pubkey,
-            approver: DUMMY_APPROVER,
-          },
-          signers: [],
-        });
-        await connection.confirmTransaction(signature, "processed");
-        getUserContracts(wallet.publicKey, connection, program);
-        notify({
-          type: "success",
-          message: "Transaction successful!",
-          txid: signature,
-        });
-      } catch (error) {
-        notify({
-          type: "error",
-          message: `Transaction failed!`,
-          description: error?.message,
-          txid: signature,
-        });
-        // console.log(error);
-        console.log(
-          "error",
-          `Transaction failed! ${error?.message}`,
-          signature
-        );
-        return;
-      }
-    }, [wallet, notify, connection]);
-
-    const payContract = useCallback(async () => {
-      if (!wallet.publicKey) {
-        notify({ type: "error", message: `Wallet not connected!` });
-        console.log("error", `Send Transaction: Wallet not connected!`);
-        return;
-      }
-
-      // Vault PDA
-      let [vault, vaultBump] = await PublicKey.findProgramAddress(
-        [
-          Buffer.from(anchor.utils.bytes.utf8.encode("vault")),
-          NATIVE_MINT.toBuffer(),
-        ],
-        program.programId
-      );
-
-      let signature: TransactionSignature = "";
-
-      let ata = await getAssociatedTokenAddress(
-        NATIVE_MINT, // mint
-        wallet.publicKey // owner
-      );
-
-      let ata_info = await connection.getParsedAccountInfo(ata);
-
-      let tx = createAssociatedTokenAccountInstruction(
-        wallet.publicKey, // payer
-        ata, // ata
-        wallet.publicKey, // owner
-        NATIVE_MINT // mint
-      );
-
-      // transfer SOL
-      let tx2 = SystemProgram.transfer({
-        fromPubkey: wallet.publicKey,
-        toPubkey: ata,
-        lamports: contract.contract.amountDue,
-      });
-
-      // sync wrapped SOL balance
-      let tx3 = createSyncNativeInstruction(ata);
-
-      // WSOL wrapping
-      let ix = [];
-      if (ata_info.value == null) {
-        // Create account
-        ix = [tx, tx2, tx3];
-      } else {
-        // Account exists
-        ix = [tx2, tx3];
-      }
-
-      try {
-        signature = await program.rpc.pay({
-          accounts: {
-            signer: wallet.publicKey,
-            source: ata,
-            contract: contract.pubkey,
-            vault: vault,
-            payMint: NATIVE_MINT,
-            systemProgram: SystemProgram.programId,
-            tokenProgram: TOKEN_PROGRAM_ID,
-          },
-          instructions: ix,
-          signers: [],
-        });
-        await connection.confirmTransaction(signature, "processed");
-        getUserContracts(wallet.publicKey, connection, program);
-        notify({
-          type: "success",
-          message: "Transaction successful!",
-          txid: signature,
-        });
-      } catch (error) {
-        notify({
-          type: "error",
-          message: `Transaction failed!`,
-          description: error?.message,
-          txid: signature,
-        });
-        // console.log(error);
-        console.log(
-          "error",
-          `Transaction failed! ${error?.message}`,
-          signature
-        );
-        return;
-      }
-    }, [wallet, notify, connection]);
-
     const redeemContract = useCallback(async () => {
       let signature: TransactionSignature = "";
 
@@ -397,7 +265,7 @@ export const AccountView: FC = ({}) => {
           signers: [],
         });
         await connection.confirmTransaction(signature, "processed");
-        getUserContracts(wallet.publicKey, connection, program);
+        getUserOwnedContracts(wallet.publicKey, connection, program);
         notify({
           type: "success",
           message: "Transaction successful!",
@@ -420,25 +288,7 @@ export const AccountView: FC = ({}) => {
       }
     }, [wallet, connection, notify]);
 
-    if (contract.contract.status == 0) {
-      return (
-        <button
-          className="btn bg-black text-color-green border-color-green font-bold"
-          onClick={approveContract}
-        >
-          Approve{" "}
-        </button>
-      );
-    } else if (contract.contract.status == 1) {
-      return (
-        <button
-          className="btn bg-black text-color-green border-color-green font-bold"
-          onClick={payContract}
-        >
-          Pay{" "}
-        </button>
-      );
-    } else if (contract.contract.status == 2) {
+    if (contract.contract.status == 2) {
       return (
         <button
           className="btn border-color-green bg-black text-color-green font-bold"
@@ -453,108 +303,56 @@ export const AccountView: FC = ({}) => {
   };
 
   const ContractCard = ({ contract }) => {
-    console.log(contract);
-    if (contract.contract.recipient.equals(wallet.publicKey)) {
-      return (
-        <div className="card-body">
-          <div className="flex justify-between items-center">
-            <h2 className="card-title mb-0">
-              <Link href={"/contract/" + contract.pubkey.toString()}>
-                <a>{shortAddr(contract.pubkey.toString())}</a>
-              </Link>
-            </h2>
-            <span className="inline-block ml-2 align-text-bottom">
-              <Link href={"/contract/" + contract.pubkey.toString()}>
-                <a>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                    />
-                  </svg>
-                </a>
-              </Link>
-            </span>
-            <span>
-              <ContractStatusBadge contract={contract}></ContractStatusBadge>
-            </span>
-          </div>
-          <p className="">
-            <span className="neon-pink">Sender:</span>{" "}
-            {shortAddr(contract.contract.creator.toString())}
-          </p>
-          <p className="">
-            <span className="neon-pink">Amount due:</span>{" "}
-            {contract.contract.amountDue.toNumber() / LAMPORTS_PER_SOL} SOL
-          </p>
-          <p className="">
-            <span className="neon-pink">Due date:</span>{" "}
-            {new Date(contract.contract.dueDate * 1000).toLocaleDateString()}
-          </p>
-          <div className="flex flex-wrap justify-center mt-4">
-            <ActionButton contract={contract}></ActionButton>
-          </div>
+    return (
+      <div className="card-body">
+        <div className="flex justify-between items-center">
+          <h2 className="card-title mb-0">
+            <Link href={"/contract/" + contract.pubkey.toString()}>
+              <a>{shortAddr(contract.pubkey.toString())}</a>
+            </Link>
+          </h2>
+          <span className="inline-block ml-2 align-text-bottom">
+            <Link href={"/contract/" + contract.pubkey.toString()}>
+              <a>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                  />
+                </svg>
+              </a>
+            </Link>
+          </span>
+          <span>
+            <ContractStatusBadge contract={contract}></ContractStatusBadge>
+          </span>
         </div>
-      );
-    } else {
-      return (
-        <div className="card-body">
-          <div className="flex justify-between items-center">
-            <h2 className="card-title mb-0">
-              <Link href={"/contract/" + contract.pubkey.toString()}>
-                <a>{shortAddr(contract.pubkey.toString())}</a>
-              </Link>
-            </h2>
-            <span className="inline-block ml-2 align-text-bottom">
-              <Link href={"/contract/" + contract.pubkey.toString()}>
-                <a>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                    />
-                  </svg>
-                </a>
-              </Link>
-            </span>
-            <span>
-              <ContractStatusBadge contract={contract}></ContractStatusBadge>
-            </span>
-          </div>
-          <p className="">
-            <span className="neon-pink">Sender:</span>{" "}
-            {shortAddr(contract.contract.creator.toString())}
-          </p>
-          <p className="">
-            <span className="neon-pink">Amount due:</span>{" "}
-            {contract.contract.amountDue.toNumber() / LAMPORTS_PER_SOL} SOL
-          </p>
-          <p className="">
-            <span className="neon-pink">Due date:</span>{" "}
-            {new Date(contract.contract.dueDate * 1000).toLocaleDateString()}
-          </p>
-          <div className="flex flex-wrap justify-center mt-4">
-            <SellButton contract={contract}></SellButton>
-          </div>
+        <p className="">
+          <span className="neon-pink">Sender:</span>{" "}
+          {shortAddr(contract.contract.creator.toString())}
+        </p>
+        <p className="">
+          <span className="neon-pink">Amount due:</span>{" "}
+          {contract.contract.amountDue.toNumber() / LAMPORTS_PER_SOL} SOL
+        </p>
+        <p className="">
+          <span className="neon-pink">Due date:</span>{" "}
+          {new Date(contract.contract.dueDate * 1000).toLocaleDateString()}
+        </p>
+        <div className="flex flex-wrap justify-center mt-4">
+          <ActionButton contract={contract}></ActionButton>
+          <SellButton contract={contract}></SellButton>
         </div>
-      );
-    }
+      </div>
+    );
   };
 
   return (
@@ -576,7 +374,7 @@ export const AccountView: FC = ({}) => {
             return (
               <div
                 key={index}
-                className="card w-100 m-2 bg-black shadow-xl shadow-black"
+                className="card m-2 bg-black shadow-xl shadow-black"
               >
                 <ContractCard contract={contract}></ContractCard>
               </div>

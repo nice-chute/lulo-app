@@ -107,6 +107,11 @@
           "isSigner": false
         },
         {
+          "name": "contract",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "askMint",
           "isMut": false,
           "isSigner": false
@@ -143,6 +148,11 @@
           "isSigner": true
         },
         {
+          "name": "seller",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "source",
           "isMut": true,
           "isSigner": false
@@ -160,7 +170,7 @@
         {
           "name": "destination",
           "isMut": true,
-          "isSigner": true
+          "isSigner": false
         },
         {
           "name": "nftMint",
@@ -179,6 +189,11 @@
         },
         {
           "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
           "isMut": false,
           "isSigner": false
         },
@@ -207,6 +222,10 @@
           },
           {
             "name": "mint",
+            "type": "publicKey"
+          },
+          {
+            "name": "contract",
             "type": "publicKey"
           },
           {

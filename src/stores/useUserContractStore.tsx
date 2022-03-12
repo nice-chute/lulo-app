@@ -26,7 +26,12 @@ const useUserContractStore = create<UserContractStore>((set, _get) => ({
         //console.log(account.pubkey.toBase58());
         try {
           let contract = await program.account.contract.fetch(account.pubkey);
-          contracts.push({ pubkey: account.pubkey, contract: contract });
+          console.log(contract);
+          if (contract.creator.equals(publicKey)) {
+            contracts.push({ pubkey: account.pubkey, contract: contract });
+          } else if (contract.recipient.equals(publicKey)) {
+            contracts.push({ pubkey: account.pubkey, contract: contract });
+          }
         } catch (error) {}
       }
     } catch (e) {}

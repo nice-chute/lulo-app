@@ -109,7 +109,7 @@
         {
           "name": "mintAccount",
           "isMut": true,
-          "isSigner": true
+          "isSigner": false
         },
         {
           "name": "payMint",
@@ -119,6 +119,11 @@
         {
           "name": "vault",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
           "isSigner": false
         },
         {

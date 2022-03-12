@@ -24,6 +24,10 @@ import {
   NATIVE_MINT,
 } from "../../models/constants";
 import luloIdl from "../../utils/lulo.json";
+import {
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  getAssociatedTokenAddress,
+} from "@solana/spl-token";
 
 export const CreateView: FC = ({}) => {
   const programId = new PublicKey(luloIdl.metadata.address);
@@ -77,7 +81,6 @@ export const CreateView: FC = ({}) => {
 
       // Contract address
       let contract = Keypair.generate();
-      let mintAccount = Keypair.generate();
 
       // State PDA
       let [state, stateBump] = await PublicKey.findProgramAddress(
@@ -103,27 +106,29 @@ export const CreateView: FC = ({}) => {
         program.programId
       );
 
+      // ATA for contract mint token
+      let mintAccount = await getAssociatedTokenAddress(mint, wallet.publicKey);
+
       // Transaction to create contract
       signature = await program.rpc.create(amountDue, dueDate, {
         accounts: {
           signer: wallet.publicKey,
           contract: contract.publicKey,
           mint: mint,
-          mintAccount: mintAccount.publicKey,
+          mintAccount: mintAccount,
           payMint: NATIVE_MINT,
           vault: vault,
           recipient: addrKey,
+          associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
           tokenProgram: TOKEN_PROGRAM_ID,
           rent: SYSVAR_RENT_PUBKEY,
         },
-        signers: [contract, mintAccount],
+        signers: [contract],
       });
 
       // signature = await sendTransaction(transaction, connection);
       await connection.confirmTransaction(signature, "processed");
-      console.log(contract.publicKey.toBase58());
-      console.log(mintAccount.publicKey.toBase58());
       setAmount(0);
       setDate("");
       setAddr("");
@@ -149,13 +154,13 @@ export const CreateView: FC = ({}) => {
     <div className="hero mx-auto p-4 min-h-16 py-4 w-full">
       <div className="hero-content flex flex-col">
         <h4 className="w-full max-w-md mx-auto text-center text-2xl text-black">
-          <p>Create a new payment</p>
+          <p>Send an invoice</p>
         </h4>
         <div className="p-2 text-center min-w-full">
           <div>
-            <div className="form-control">
-              <label className="input-group input-group-vertical m-2 bg-black shadow-lg shadow-black rounded-lg min-w-450">
-                <span className="bg-black border-b-fuchsia-600 text-white font-bold">
+            <div className="form-control bg-black shadow-lg shadow-black">
+              <label className="text-white input-group input-group-horizontal bg-black shadow-xl mt-2 shadow-black min-w-450">
+                <span className="neon-pink bg-black text-white font-bold">
                   Payer
                 </span>
                 <input
@@ -163,42 +168,41 @@ export const CreateView: FC = ({}) => {
                   onChange={getAddressValue}
                   placeholder="Gpqo...RJbs"
                   value={addr}
-                  className="input bg-black"
+                  className="input border-none text-white focus:ring-0 bg-black w-full"
                 ></input>
               </label>
-              <label className="input-group input-group-vertical m-2 shadow-lg shadow-black bg-black rounded-lg">
-                <span className="bg-black text-white font-bold text-center">
-                  Amount Due
+              <label className="text-white input-group input-group-horizontal shadow-xl shadow-black bg-black">
+                <span className="neon-pink bg-black text-white font-bold text-center">
+                  Amount
                 </span>
                 <input
                   type="number"
-                  step="any"
                   onChange={getAmountValue}
                   placeholder="0 SOL"
                   value={amount}
-                  className="input bg-black"
+                  className="input border-none focus:ring-0 bg-black"
                 ></input>
               </label>
-              <label className="input-group input-group-vertical m-2 shadow-lg shadow-black bg-black rounded-lg">
-                <span className="bg-black text-white font-bold text-center">
+              <label className="text-white input-group input-group-horizontal shadow-xl shadow-black bg-black ">
+                <span className="neon-pink bg-black text-white font-bold text-center">
                   Due Date
                 </span>
                 <input
                   type="date"
                   value={date}
                   onChange={getDateValue}
-                  className="input bg-black"
+                  className="input border-none focus:ring-0 bg-black"
                 ></input>
               </label>
             </div>
           </div>
-          <div>
+          <div className="bg-black shadow-xl shadow-black">
             <button
-              className="btn m-2 bg-black shadow-lg shadow-black text-color-green hover:brightness-125"
+              className="btn m-3 border-color-green bg-black shadow-xl shadow-black text-color-green hover:brightness-125"
               onClick={onClick}
               disabled={!wallet}
             >
-              <span> Send contract </span>
+              <span> Send</span>
             </button>
           </div>
         </div>
