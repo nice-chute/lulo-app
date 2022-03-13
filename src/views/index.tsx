@@ -4,4 +4,4 @@ export { MarketView } from "./market";
 export { ContractView } from "./contract";
 export { OwnedView } from "./owned";
 export { ApproverView } from "./approvers";
-export { AccountView } from "./account/index";
+export { AccountView } from "./account";
