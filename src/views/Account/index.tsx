@@ -567,7 +567,7 @@ export const AccountView: FC = ({}) => {
           <Link href="/account">
             <a className="btn bg-black">Account</a>
           </Link>
-          <Link href="/account/owned">
+          <Link href="/owned">
             <a className="btn bg-black">Owned</a>
           </Link>
         </div>

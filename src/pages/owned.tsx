@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { OwnedView } from "../../views";
+import { OwnedView } from "../views";
 
 const Created: NextPage = (props) => {
   return (
