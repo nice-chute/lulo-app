@@ -95,6 +95,13 @@ export const OwnedView: FC = ({}) => {
   };
 
   const SellButton = ({ contract }) => {
+    const [amount, setAmount] = useState(0);
+
+    const getAmountValue = (event) => {
+      let input = event.target.value;
+      setAmount(input);
+    };
+
     const sellContract = useCallback(async () => {
       if (!wallet.publicKey) {
         notify({ type: "error", message: `Wallet not connected!` });
@@ -104,7 +111,7 @@ export const OwnedView: FC = ({}) => {
       let signature: TransactionSignature = "";
 
       try {
-        const ask = new anchor.BN(0.1 * LAMPORTS_PER_SOL);
+        const ask = new anchor.BN(amount * LAMPORTS_PER_SOL);
         let nftMint = contract.contract.mint;
         // Listing PDA
         let [listing, listingBump] = await PublicKey.findProgramAddress(
@@ -179,15 +186,24 @@ export const OwnedView: FC = ({}) => {
         );
         return;
       }
-    }, [wallet, notify, connection]);
+    }, [wallet, notify, connection, amount]);
 
     return (
-      <button
-        className="btn border-color-green ml-2 bg-black text-color-green font-bold"
-        onClick={sellContract}
-      >
-        Sell
-      </button>
+      <div>
+        <button
+          className="btn border-color-green ml-2 bg-black text-color-green font-bold"
+          onClick={sellContract}
+        >
+          Sell
+        </button>
+        <input
+          type="number"
+          onChange={getAmountValue}
+          placeholder="0 SOL"
+          value={amount}
+          className="input border-none focus:ring-0 bg-black"
+        ></input>
+      </div>
     );
   };
 
@@ -348,7 +364,6 @@ export const OwnedView: FC = ({}) => {
           {new Date(contract.contract.dueDate * 1000).toLocaleDateString()}
         </p>
         <div className="flex flex-wrap justify-center mt-4">
-          <ActionButton contract={contract}></ActionButton>
           <SellButton contract={contract}></SellButton>
         </div>
       </div>

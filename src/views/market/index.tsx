@@ -193,23 +193,11 @@ export const MarketView: FC = ({}) => {
     return (
       <div className="card-body">
         <h2 className="card-title mb-5">
-          <a
-            href={
-              "https://explorer.solana.com/address/" +
-              listing.contract.toString() +
-              "?cluster=devnet"
-            }
-          >
+          <a href={"/contract/" + listing.contract.toString()}>
             {shortAddr(listing.contract.toString())}
           </a>
           <span className="inline-block ml-2 align-text-bottom">
-            <a
-              href={
-                "https://explorer.solana.com/address/" +
-                listing.contract.toString() +
-                "?cluster=devnet"
-              }
-            >
+            <a href={"/contract/" + listing.contract.toString()}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6"
@@ -248,7 +236,6 @@ export const MarketView: FC = ({}) => {
           <div>
             {listing.ask.toNumber() / LAMPORTS_PER_SOL} SOL{" "}
             <span className="text-emerald-600">
-              +
               {Math.round(
                 ((listing.ask.toNumber() - contract.amountDue.toNumber()) /
                   contract.amountDue.toNumber()) *
