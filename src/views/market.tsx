@@ -1,7 +1,7 @@
 import { FC, useEffect, useState, useCallback } from "react";
-import dexIdl from "../../utils/dex.json";
-import luloIdl from "../../utils/lulo.json";
-import useDexListingStore from "../../stores/useDexListingStore";
+import dexIdl from "../utils/dex.json";
+import luloIdl from "../utils/lulo.json";
+import useDexListingStore from "../stores/useDexListingStore";
 import {
   PublicKey,
   TransactionSignature,
@@ -20,14 +20,14 @@ import {
   useConnection,
 } from "@solana/wallet-adapter-react";
 import { Program, Provider, BN } from "@project-serum/anchor";
-import { opts } from "../../models/constants";
-import { shortAddr } from "../../utils/address";
-import { notify } from "../../utils/notifications";
+import { opts } from "../models/constants";
+import { shortAddr } from "../utils/address";
+import { notify } from "../utils/notifications";
 import {
   SYSVAR_RENT_PUBKEY,
   TOKEN_PROGRAM_ID,
   NATIVE_MINT,
-} from "../../models/constants";
+} from "../models/constants";
 import {
   createAssociatedTokenAccount,
   createSyncNativeInstruction,

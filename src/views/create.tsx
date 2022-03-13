@@ -1,5 +1,5 @@
 import { FC, useCallback, useState } from "react";
-import { notify } from "../../utils/notifications";
+import { notify } from "../utils/notifications";
 import {
   useAnchorWallet,
   useConnection,
@@ -22,8 +22,8 @@ import {
   TOKEN_PROGRAM_ID,
   SYSVAR_RENT_PUBKEY,
   NATIVE_MINT,
-} from "../../models/constants";
-import luloIdl from "../../utils/lulo.json";
+} from "../models/constants";
+import luloIdl from "../utils/lulo.json";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   getAssociatedTokenAddress,

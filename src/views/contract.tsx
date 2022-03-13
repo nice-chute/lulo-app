@@ -7,12 +7,12 @@ import {
   useConnection,
 } from "@solana/wallet-adapter-react";
 // Store
-import useContractInfoStore from "../../stores/useContractInfoStore";
-import { opts } from "../../models/constants";
+import useContractInfoStore from "../stores/useContractInfoStore";
+import { opts } from "../models/constants";
 // Anchor + Web3
 import { Program, Provider, BN } from "@project-serum/anchor";
-import luloIdl from "../../utils/lulo.json";
-import dexIdl from "../../utils/dex.json";
+import luloIdl from "../utils/lulo.json";
+import dexIdl from "../utils/dex.json";
 import {
   PublicKey,
   TransactionSignature,
@@ -31,14 +31,14 @@ import {
   createAssociatedTokenAccountInstruction,
 } from "@solana/spl-token";
 // Utils
-import { shortAddr } from "../../utils/address";
+import { shortAddr } from "../utils/address";
 import {
   SYSVAR_RENT_PUBKEY,
   DUMMY_APPROVER,
   NATIVE_MINT,
   TOKEN_PROGRAM_ID,
-} from "../../models/constants";
-import { notify } from "../../utils/notifications";
+} from "../models/constants";
+import { notify } from "../utils/notifications";
 
 export const ContractView = ({ id }) => {
   const programId = new PublicKey(luloIdl.metadata.address);

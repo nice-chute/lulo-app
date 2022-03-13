@@ -10,11 +10,11 @@ import {
 } from "@solana/wallet-adapter-react";
 
 // Components
-import { RequestAirdrop } from "../../components/RequestAirdrop";
-import pkg from "../../../package.json";
+import { RequestAirdrop } from "../components/RequestAirdrop";
+import pkg from "../../package.json";
 
 // Store
-import useUserSOLBalanceStore from "../../stores/useUserSOLBalanceStore";
+import useUserSOLBalanceStore from "../stores/useUserSOLBalanceStore";
 
 export const HomeView: FC = ({}) => {
   const wallet = useWallet();
