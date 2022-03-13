@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { ApproverView } from "../../views";
+import { ApproverView } from "../views";
 
 const Approvers: NextPage = (props) => {
   return (
