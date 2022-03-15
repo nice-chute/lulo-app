@@ -179,7 +179,7 @@ export const MarketView: FC = ({}) => {
 
     return (
       <button
-        className="bg-black text-color-green font-bold"
+        className="btn border-color-green ml-2 bg-black text-color-green font-bold"
         onClick={buyContract}
       >
         Buy
@@ -233,17 +233,9 @@ export const MarketView: FC = ({}) => {
         </p>
         <div className="flex flex-wrap justify-between mt-4">
           <BuyButton listing={listing}></BuyButton>
-          <div>
-            {listing.ask.toNumber() / LAMPORTS_PER_SOL} SOL{" "}
-            <span className="text-emerald-600">
-              {Math.round(
-                ((listing.ask.toNumber() - contract.amountDue.toNumber()) /
-                  contract.amountDue.toNumber()) *
-                  -100
-              )}{" "}
-              %
-            </span>
-          </div>
+          <span className="neon-orange inline-flex items-center">
+            {listing.ask.toNumber() / LAMPORTS_PER_SOL} SOL
+          </span>
         </div>
       </div>
     );
@@ -252,15 +244,15 @@ export const MarketView: FC = ({}) => {
   return (
     <div className="hero mx-auto p-4 min-h-16 py-4">
       <div className="hero-content flex flex-col">
-        <h4 className="-full max-w-md mx-auto text-center text-2xl text-black">
-          <p>Lulo DEX</p>
+        <h4 className="-full max-w-md mx-auto text-center text-2xl text-color-green">
+          <p>Trade</p>
         </h4>
         <div className="flex flex-wrap w-full">
           {listings.map((listing, index) => {
             return (
               <div
                 key={index}
-                className="card w-64 m-2 bg-black shadow-xl shadow-black"
+                className="card w-64 m-2 bg-black neon-blue-shadow"
               >
                 <ListingCard
                   props={{ listing: listing, index: index }}

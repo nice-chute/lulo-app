@@ -153,14 +153,14 @@ export const CreateView: FC = ({}) => {
   return (
     <div className="hero mx-auto p-4 min-h-16 py-4 w-full">
       <div className="hero-content flex flex-col">
-        <h4 className="w-full max-w-md mx-auto text-center text-2xl text-black">
-          <p>Send an invoice</p>
+        <h4 className="w-full max-w-md mx-auto text-center text-2xl text-color-green">
+          <p>Create an invoice</p>
         </h4>
-        <div className="p-2 text-center min-w-full">
-          <div>
-            <div className="form-control bg-black shadow-lg shadow-black">
-              <label className="text-white input-group input-group-horizontal bg-black shadow-xl mt-2 shadow-black min-w-450">
-                <span className="neon-pink bg-black text-white font-bold">
+        <div className="p-2 text-center min-w-full neon-blue-shadow rounded-lg mt-6">
+          <div className="">
+            <div className="form-control bg-black mb-6">
+              <label className="text-white input-group input-group-horizontal bg-black mt-2 min-w-450">
+                <span className="neon-blue bg-black text-white font-bold">
                   Payer
                 </span>
                 <input
@@ -171,8 +171,8 @@ export const CreateView: FC = ({}) => {
                   className="input border-none text-white focus:ring-0 bg-black w-full"
                 ></input>
               </label>
-              <label className="text-white input-group input-group-horizontal shadow-xl shadow-black bg-black">
-                <span className="neon-pink bg-black text-white font-bold text-center">
+              <label className="text-white input-group input-group-horizontal  bg-black">
+                <span className="neon-blue bg-black text-white font-bold text-center">
                   Amount
                 </span>
                 <input
@@ -183,8 +183,8 @@ export const CreateView: FC = ({}) => {
                   className="input border-none focus:ring-0 bg-black"
                 ></input>
               </label>
-              <label className="text-white input-group input-group-horizontal shadow-xl shadow-black bg-black ">
-                <span className="neon-pink bg-black text-white font-bold text-center">
+              <label className="text-white input-group input-group-horizontal bg-black ">
+                <span className="neon-blue bg-black text-white font-bold text-center">
                   Due Date
                 </span>
                 <input
@@ -196,9 +196,9 @@ export const CreateView: FC = ({}) => {
               </label>
             </div>
           </div>
-          <div className="bg-black shadow-xl shadow-black">
+          <div className="bg-black">
             <button
-              className="btn m-3 border-color-green bg-black shadow-xl shadow-black text-color-green hover:brightness-125"
+              className="btn border-color-green bg-black text-color-green hover:brightness-125"
               onClick={onClick}
               disabled={!wallet}
             >

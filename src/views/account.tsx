@@ -389,6 +389,7 @@ export const AccountView: FC = ({}) => {
             recipient: ata,
             vault: vault,
             payMint: contract.contract.payMint,
+            mint: contract.contract.mint,
             systemProgram: SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
             rent: SYSVAR_RENT_PUBKEY,
@@ -549,41 +550,42 @@ export const AccountView: FC = ({}) => {
             <span className="neon-pink">Due date:</span>{" "}
             {new Date(contract.contract.dueDate * 1000).toLocaleDateString()}
           </p>
-          <div className="flex flex-wrap justify-center mt-4">
-            <SellButton contract={contract}></SellButton>
-          </div>
         </div>
       );
     }
   };
 
-  return (
-    <div className="hero mx-auto p-4 min-h-16 py-4">
-      <div className="hero-content flex flex-col">
-        <h4 className="-full max-w-md mx-auto text-center text-2xl text-black">
-          <p>Account Overview</p>
-        </h4>
-        <div className="btn-group">
-          <Link href="/account">
-            <a className="btn bg-black">Account</a>
-          </Link>
-          <Link href="/owned">
-            <a className="btn bg-black">Owned</a>
-          </Link>
-        </div>
-        <div className="flex flex-wrap w-full">
-          {contracts.map((contract, index) => {
-            return (
-              <div
-                key={index}
-                className="card w-100 m-2 bg-black shadow-xl shadow-black"
-              >
-                <ContractCard contract={contract}></ContractCard>
-              </div>
-            );
-          })}
+  if (wallet.publicKey) {
+    return (
+      <div className="hero mx-auto p-4 min-h-16 py-4">
+        <div className="hero-content flex flex-col">
+          <h4 className="-full max-w-md mx-auto text-center text-2xl text-color-green">
+            <p>Account Overview</p>
+          </h4>
+          <div className="btn-group">
+            <Link href="/account">
+              <a className="btn bg-black">Sent/Received</a>
+            </Link>
+            <Link href="/owned">
+              <a className="btn bg-black">Owned</a>
+            </Link>
+          </div>
+          <div className="flex flex-wrap w-full">
+            {contracts.map((contract, index) => {
+              return (
+                <div
+                  key={index}
+                  className="card min-width-card m-2 bg-black neon-blue-shadow"
+                >
+                  <ContractCard contract={contract}></ContractCard>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return <div>No wallet connected!</div>;
+  }
 };

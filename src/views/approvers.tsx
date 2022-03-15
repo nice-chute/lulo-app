@@ -104,14 +104,14 @@ export const ApproverView: FC = ({}) => {
   return (
     <div className="hero mx-auto p-4 min-h-16 py-4">
       <div className="hero-content flex flex-col max-w-lg">
-        <h4 className="w-full max-w-md mx-auto text-center text-2xl text-black">
+        <h4 className="w-full max-w-md mx-auto text-center text-2xl text-color-green">
           <p>Approvers</p>
         </h4>
-        <div className="text-center text-md text-black">
+        <div className="text-center text-md neon-blue">
           {approverPrint(approvers).toString()}
         </div>
         <div>
-          <button className="text-black" onClick={createApprover}>
+          <button className="neon-blue" onClick={createApprover}>
             create approver
           </button>
         </div>

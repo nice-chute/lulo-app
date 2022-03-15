@@ -201,7 +201,7 @@ export const OwnedView: FC = ({}) => {
           onChange={getAmountValue}
           placeholder="0 SOL"
           value={amount}
-          className="input border-none focus:ring-0 bg-black"
+          className="input border-none focus:ring-0 bg-black neon-blue-inner"
         ></input>
       </div>
     );
@@ -373,10 +373,10 @@ export const OwnedView: FC = ({}) => {
   return (
     <div className="hero mx-auto p-4 min-h-16 py-4">
       <div className="hero-content flex flex-col">
-        <h4 className="-full max-w-md mx-auto text-center text-2xl text-black">
+        <h4 className="-full max-w-md mx-auto text-center text-2xl text-color-green mb-2">
           <p>Account Overview</p>
         </h4>
-        <div className="btn-group">
+        <div className="btn-group mb-2">
           <Link href="/account">
             <a className="btn bg-black">Account</a>
           </Link>
@@ -387,10 +387,7 @@ export const OwnedView: FC = ({}) => {
         <div className="flex flex-wrap w-full">
           {contracts.map((contract, index) => {
             return (
-              <div
-                key={index}
-                className="card m-2 bg-black shadow-xl shadow-black"
-              >
+              <div key={index} className="card m-2 bg-black neon-blue-shadow">
                 <ContractCard contract={contract}></ContractCard>
               </div>
             );

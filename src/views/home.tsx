@@ -32,42 +32,39 @@ export const HomeView: FC = ({}) => {
   return (
     <div className="hero mx-auto p-4 min-h-16 py-4">
       <div className="hero-content flex flex-col max-w-lg">
-        <h1 className="text-5xl pl-12 font-bold text-transparent bg-clip-text bg-black">
+        <h1 className="text-5xl pl-12 font-bold text-color-green bg-clip-text bg-black mb-2">
           LULO{" "}
-          <span className="text-sm font-normal align-top text-black">
+          <span className="text-sm font-normal align-top text-color-green">
             v{pkg.version}
           </span>
         </h1>
-        <h4 className="w-full max-w-md mx-auto text-center text-2xl text-black">
-          <p>Crypto invoices</p>
+        <h4 className="w-full max-w-md mx-auto text-center text-2xl text-color-green">
+          <p>Receivables trading platform</p>
         </h4>
         <div>
-          <div className="mockup-code w-full bg-black m-0 pl-2 pr-16">
-            <pre data-prefix=">>">
-              <code>
-                <span className="text-color-green">amount_due:</span> 317.22
-                USDC
-              </code>
-            </pre>
-            <pre data-prefix=">>">
-              <code>
-                <span className="text-color-green">due_date:</span> 05/05/2022
-              </code>
-            </pre>
-            <pre data-prefix=">>">
-              <code>
-                <span className="text-color-green">approved_by:</span>{" "}
-                GpqocRBbRL9yr4AZHdhXxhGTGR4g9ibmA3agYFNqRJbs
-              </code>
-            </pre>
+          <div className="">
+            <div className="mockup-code w-full bg-black mt-4 pl-2 pr-16 neon-blue-shadow">
+              <pre data-prefix=">>">
+                <code className="">
+                  <span className="neon-blue">amount_due:</span> 317.22 USDC
+                </code>
+              </pre>
+              <pre data-prefix=">>">
+                <code>
+                  <span className="neon-blue">due_date:</span> 05/05/2022
+                </code>
+              </pre>
+              <pre data-prefix=">>">
+                <code>
+                  <span className="neon-blue">approved_by:</span>{" "}
+                  GpqocRBbRL9yr4AZHdhXxhGTGR4g9ibmA3agYFNqRJbs
+                </code>
+              </pre>
+            </div>
           </div>
         </div>
         <div>
           <RequestAirdrop />
-        </div>
-        <div className="text-center text-md text-black">
-          {/* {wallet.publicKey && <p>Public Key: {wallet.publicKey.toBase58()}</p>} */}
-          {wallet && <p>SOL Balance: {(balance || 0).toLocaleString()}</p>}
         </div>
       </div>
     </div>
