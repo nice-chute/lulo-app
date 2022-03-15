@@ -191,7 +191,7 @@ export const OwnedView: FC = ({}) => {
     return (
       <div>
         <button
-          className="btn border-color-green ml-2 bg-black text-color-green font-bold"
+          className="btn border-color-green bg-black text-color-green font-bold"
           onClick={sellContract}
         >
           Sell
@@ -273,6 +273,7 @@ export const OwnedView: FC = ({}) => {
             recipient: ata,
             vault: vault,
             payMint: contract.contract.payMint,
+            mint: contract.contract.mint,
             systemProgram: SystemProgram.programId,
             tokenProgram: TOKEN_PROGRAM_ID,
             rent: SYSVAR_RENT_PUBKEY,
@@ -307,7 +308,7 @@ export const OwnedView: FC = ({}) => {
     if (contract.contract.status == 2) {
       return (
         <button
-          className="btn border-color-green bg-black text-color-green font-bold"
+          className="btn redeem-width border-color-green bg-black text-color-green font-bold mt-2"
           onClick={redeemContract}
         >
           Redeem{" "}
@@ -350,6 +351,10 @@ export const OwnedView: FC = ({}) => {
           <span>
             <ContractStatusBadge contract={contract}></ContractStatusBadge>
           </span>
+          <span>
+            {" "}
+            <ActionButton contract={contract}></ActionButton>
+          </span>
         </div>
         <p className="">
           <span className="neon-pink">Sender:</span>{" "}
@@ -363,7 +368,7 @@ export const OwnedView: FC = ({}) => {
           <span className="neon-pink">Due date:</span>{" "}
           {new Date(contract.contract.dueDate * 1000).toLocaleDateString()}
         </p>
-        <div className="flex flex-wrap justify-center mt-4">
+        <div className="mt-4">
           <SellButton contract={contract}></SellButton>
         </div>
       </div>

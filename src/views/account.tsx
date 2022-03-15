@@ -421,7 +421,12 @@ export const AccountView: FC = ({}) => {
       }
     }, [wallet, connection, notify]);
 
-    if (contract.contract.status == 0) {
+    console.log("hello");
+    console.log(contract.contract.status.toNumber());
+    if (
+      contract.contract.status == 0 &&
+      contract.contract.recipient.equals(wallet.publicKey)
+    ) {
       return (
         <button
           className="btn bg-black text-color-green border-color-green font-bold"
@@ -430,7 +435,10 @@ export const AccountView: FC = ({}) => {
           Approve{" "}
         </button>
       );
-    } else if (contract.contract.status == 1) {
+    } else if (
+      contract.contract.status == 1 &&
+      contract.contract.recipient.equals(wallet.publicKey)
+    ) {
       return (
         <button
           className="btn bg-black text-color-green border-color-green font-bold"
@@ -439,7 +447,10 @@ export const AccountView: FC = ({}) => {
           Pay{" "}
         </button>
       );
-    } else if (contract.contract.status == 2) {
+    } else if (
+      contract.contract.status == 2 &&
+      contract.contract.creator.equals(wallet.publicKey)
+    ) {
       return (
         <button
           className="btn border-color-green bg-black text-color-green font-bold"
@@ -454,105 +465,55 @@ export const AccountView: FC = ({}) => {
   };
 
   const ContractCard = ({ contract }) => {
-    console.log(contract);
-    if (contract.contract.recipient.equals(wallet.publicKey)) {
-      return (
-        <div className="card-body">
-          <div className="flex justify-between items-center">
-            <h2 className="card-title mb-0">
-              <Link href={"/contract/" + contract.pubkey.toString()}>
-                <a>{shortAddr(contract.pubkey.toString())}</a>
-              </Link>
-            </h2>
-            <span className="inline-block ml-2 align-text-bottom">
-              <Link href={"/contract/" + contract.pubkey.toString()}>
-                <a>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                    />
-                  </svg>
-                </a>
-              </Link>
-            </span>
-            <span>
-              <ContractStatusBadge contract={contract}></ContractStatusBadge>
-            </span>
-          </div>
-          <p className="">
-            <span className="neon-pink">Sender:</span>{" "}
-            {shortAddr(contract.contract.creator.toString())}
-          </p>
-          <p className="">
-            <span className="neon-pink">Amount due:</span>{" "}
-            {contract.contract.amountDue.toNumber() / LAMPORTS_PER_SOL} SOL
-          </p>
-          <p className="">
-            <span className="neon-pink">Due date:</span>{" "}
-            {new Date(contract.contract.dueDate * 1000).toLocaleDateString()}
-          </p>
-          <div className="flex flex-wrap justify-center mt-4">
-            <ActionButton contract={contract}></ActionButton>
-          </div>
+    return (
+      <div className="card-body">
+        <div className="flex justify-between items-center">
+          <h2 className="card-title mb-0">
+            <Link href={"/contract/" + contract.pubkey.toString()}>
+              <a>{shortAddr(contract.pubkey.toString())}</a>
+            </Link>
+          </h2>
+          <span className="inline-block ml-2 align-text-bottom">
+            <Link href={"/contract/" + contract.pubkey.toString()}>
+              <a>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                  />
+                </svg>
+              </a>
+            </Link>
+          </span>
+          <span>
+            <ContractStatusBadge contract={contract}></ContractStatusBadge>
+          </span>
         </div>
-      );
-    } else {
-      return (
-        <div className="card-body">
-          <div className="flex justify-between items-center">
-            <h2 className="card-title mb-0">
-              <Link href={"/contract/" + contract.pubkey.toString()}>
-                <a>{shortAddr(contract.pubkey.toString())}</a>
-              </Link>
-            </h2>
-            <span className="inline-block ml-2 align-text-bottom">
-              <Link href={"/contract/" + contract.pubkey.toString()}>
-                <a>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                    />
-                  </svg>
-                </a>
-              </Link>
-            </span>
-            <span>
-              <ContractStatusBadge contract={contract}></ContractStatusBadge>
-            </span>
-          </div>
-          <p className="">
-            <span className="neon-pink">Sender:</span>{" "}
-            {shortAddr(contract.contract.creator.toString())}
-          </p>
-          <p className="">
-            <span className="neon-pink">Amount due:</span>{" "}
-            {contract.contract.amountDue.toNumber() / LAMPORTS_PER_SOL} SOL
-          </p>
-          <p className="">
-            <span className="neon-pink">Due date:</span>{" "}
-            {new Date(contract.contract.dueDate * 1000).toLocaleDateString()}
-          </p>
+        <p className="">
+          <span className="neon-pink">Sender:</span>{" "}
+          {shortAddr(contract.contract.creator.toString())}
+        </p>
+        <p className="">
+          <span className="neon-pink">Amount due:</span>{" "}
+          {contract.contract.amountDue.toNumber() / LAMPORTS_PER_SOL} SOL
+        </p>
+        <p className="">
+          <span className="neon-pink">Due date:</span>{" "}
+          {new Date(contract.contract.dueDate * 1000).toLocaleDateString()}
+        </p>
+        <div className="flex flex-wrap justify-center mt-4">
+          <ActionButton contract={contract}></ActionButton>
         </div>
-      );
-    }
+      </div>
+    );
   };
 
   if (wallet.publicKey) {

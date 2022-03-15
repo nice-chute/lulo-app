@@ -105,6 +105,10 @@ a {
   background:black;
 }
 
+.redeem-width {
+  width:70px
+}
+
 .hot-pink-hover:hover {
   background: linear-gradient(to right, #f953c6, #b91d73);
 }

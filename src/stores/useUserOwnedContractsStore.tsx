@@ -33,8 +33,14 @@ const useUserOwnedContractStore = create<UserOwnedContractStore>(
               publicKey,
               { mint: contract.mint }
             );
-            if (accounts.value.length > 0) {
-              contracts.push({ pubkey: account.pubkey, contract: contract });
+            for (let j = 0; accounts.value.length > j; j++) {
+              if (
+                accounts.value[j]["account"]["data"]["parsed"]["info"][
+                  "tokenAmount"
+                ]["uiAmount"] > 0
+              ) {
+                contracts.push({ pubkey: account.pubkey, contract: contract });
+              }
             }
           } catch (error) {}
         }

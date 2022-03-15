@@ -217,11 +217,8 @@ export const ContractView = ({ id }) => {
           <div className="flex flex-wrap w-full text-white">
             {contract.map((c, index) => {
               return (
-                <div>
-                  <div
-                    key={index}
-                    className="card w-100 m-2 bg-black neon-blue-shadow"
-                  >
+                <div key={index}>
+                  <div className="card w-100 m-2 bg-black neon-blue-shadow">
                     <ContractInfo c={c}></ContractInfo>
                   </div>
                   <div className="mt-12 text-black">
