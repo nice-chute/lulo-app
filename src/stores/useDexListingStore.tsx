@@ -5,7 +5,6 @@ import { Program } from "@project-serum/anchor";
 interface DexListingStore extends State {
   listings: any[];
   getDexListings: (
-    publicKey: PublicKey,
     connection: Connection,
     dexProgram: Program,
     luloProgram: Program
@@ -14,7 +13,7 @@ interface DexListingStore extends State {
 
 const useDexListingStore = create<DexListingStore>((set, _get) => ({
   listings: [],
-  getDexListings: async (publicKey, connection, dexProgram, luloProgram) => {
+  getDexListings: async (connection, dexProgram, luloProgram) => {
     let listings: any[] = [];
     try {
       // Dex accounts

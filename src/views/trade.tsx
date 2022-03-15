@@ -58,9 +58,7 @@ export const MarketView: FC = ({}) => {
   const { getDexListings } = useDexListingStore();
 
   useEffect(() => {
-    if (wallet.publicKey) {
-      getDexListings(wallet.publicKey, connection, program, luloProgram);
-    }
+    getDexListings(connection, program, luloProgram);
   }, [wallet, connection, getDexListings]);
 
   const BuyButton = ({ listing }) => {
@@ -154,7 +152,7 @@ export const MarketView: FC = ({}) => {
           signers: [],
         });
         await connection.confirmTransaction(signature, "processed");
-        getDexListings(wallet.publicKey, connection, program, luloProgram);
+        getDexListings(connection, program, luloProgram);
         notify({
           type: "success",
           message: "Transaction successful!",
@@ -241,27 +239,31 @@ export const MarketView: FC = ({}) => {
     );
   };
 
-  return (
-    <div className="hero mx-auto p-4 min-h-16 py-4">
-      <div className="hero-content flex flex-col">
-        <h4 className="-full max-w-md mx-auto text-center text-2xl text-color-green">
-          <p>Trade</p>
-        </h4>
-        <div className="flex flex-wrap w-full">
-          {listings.map((listing, index) => {
-            return (
-              <div
-                key={index}
-                className="card min-width-card w-64 m-2 bg-black neon-blue-shadow"
-              >
-                <ListingCard
-                  props={{ listing: listing, index: index }}
-                ></ListingCard>
-              </div>
-            );
-          })}
+  if (listings.length > 0) {
+    return (
+      <div className="hero mx-auto p-4 min-h-16 py-4">
+        <div className="hero-content flex flex-col">
+          <h4 className="-full max-w-md mx-auto text-center text-2xl text-color-green">
+            <p>Trade</p>
+          </h4>
+          <div className="flex flex-wrap w-full">
+            {listings.map((listing, index) => {
+              return (
+                <div
+                  key={index}
+                  className="card min-width-card w-64 m-2 bg-black neon-blue-shadow"
+                >
+                  <ListingCard
+                    props={{ listing: listing, index: index }}
+                  ></ListingCard>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return <div>LOADING ...</div>;
+  }
 };
