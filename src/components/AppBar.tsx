@@ -75,12 +75,6 @@ export const AppBar: FC = (props) => {
                   </label>
                 </div>
               </li>
-              <li>
-                <a>Slippage (pending)</a>
-              </li>
-              <li>
-                <a>Setting 3</a>
-              </li>
             </ul>
           </div>
           <WalletMultiButton className="btn btn-ghost mr-2" />

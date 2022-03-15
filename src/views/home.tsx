@@ -35,11 +35,11 @@ export const HomeView: FC = ({}) => {
         <h1 className="text-5xl pl-12 font-bold text-color-green bg-clip-text bg-black mb-2">
           LULO{" "}
           <span className="text-sm font-normal align-top text-color-green">
-            v{pkg.version}
+            devnet :)
           </span>
         </h1>
         <h4 className="w-full max-w-md mx-auto text-center text-2xl text-color-green">
-          <p>Receivables trading platform</p>
+          <p>Crypto receivables</p>
         </h4>
         <div>
           <div className="">
