@@ -536,7 +536,7 @@ export const AccountView: FC = ({}) => {
               return (
                 <div
                   key={index}
-                  className="card min-width-card m-2 bg-black neon-blue-shadow"
+                  className="card min-width-card m-2 bg-black neon-blue-inner"
                 >
                   <ContractCard contract={contract}></ContractCard>
                 </div>

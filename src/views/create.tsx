@@ -156,7 +156,7 @@ export const CreateView: FC = ({}) => {
         <h4 className="w-full max-w-md mx-auto text-center text-2xl text-color-green">
           <p>Create an invoice</p>
         </h4>
-        <div className="p-2 text-center min-w-full neon-blue-shadow rounded-lg mt-6">
+        <div className="p-2 text-center min-w-full neon-blue-inner rounded-lg mt-6">
           <div className="">
             <div className="form-control bg-black mb-6">
               <label className="text-white input-group input-group-horizontal bg-black mt-2 min-w-450">

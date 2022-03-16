@@ -375,30 +375,34 @@ export const OwnedView: FC = ({}) => {
     );
   };
 
-  return (
-    <div className="hero mx-auto p-4 min-h-16 py-4">
-      <div className="hero-content flex flex-col">
-        <h4 className="-full max-w-md mx-auto text-center text-2xl text-color-green mb-2">
-          <p>Account Overview</p>
-        </h4>
-        <div className="btn-group mb-2">
-          <Link href="/account">
-            <a className="btn bg-black">Account</a>
-          </Link>
-          <Link href="/owned">
-            <a className="btn bg-black">Owned</a>
-          </Link>
-        </div>
-        <div className="flex flex-wrap w-full">
-          {contracts.map((contract, index) => {
-            return (
-              <div key={index} className="card m-2 bg-black neon-blue-shadow">
-                <ContractCard contract={contract}></ContractCard>
-              </div>
-            );
-          })}
+  if (contracts.length > 0) {
+    return (
+      <div className="hero mx-auto p-4 min-h-16 py-4">
+        <div className="hero-content flex flex-col">
+          <h4 className="-full max-w-md mx-auto text-center text-2xl text-color-green mb-2">
+            <p>Account Overview</p>
+          </h4>
+          <div className="btn-group mb-2">
+            <Link href="/account">
+              <a className="btn bg-black">Account</a>
+            </Link>
+            <Link href="/owned">
+              <a className="btn bg-black">Owned</a>
+            </Link>
+          </div>
+          <div className="flex flex-wrap w-full">
+            {contracts.map((contract, index) => {
+              return (
+                <div key={index} className="card m-2 bg-black neon-blue-inner">
+                  <ContractCard contract={contract}></ContractCard>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return <div>LOADING...</div>;
+  }
 };

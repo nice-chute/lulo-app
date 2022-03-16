@@ -251,7 +251,7 @@ export const MarketView: FC = ({}) => {
               return (
                 <div
                   key={index}
-                  className="card min-width-card w-64 m-2 bg-black neon-blue-shadow"
+                  className="card min-width-card w-64 m-2 bg-black neon-blue-inner"
                 >
                   <ListingCard
                     props={{ listing: listing, index: index }}
