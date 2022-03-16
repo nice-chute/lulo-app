@@ -154,7 +154,7 @@ export const CreateView: FC = ({}) => {
     <div className="hero mx-auto p-4 min-h-16 py-4 w-full">
       <div className="hero-content flex flex-col">
         <h4 className="w-full max-w-md mx-auto text-center text-2xl text-color-green">
-          <p>Create an invoice</p>
+          <p>Create receivable</p>
         </h4>
         <div className="p-2 text-center min-w-full neon-blue-inner rounded-lg mt-6">
           <div className="">
