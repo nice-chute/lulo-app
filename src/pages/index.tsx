@@ -7,7 +7,7 @@ const Home: NextPage = (props) => {
     <div>
       <Head>
         <title>Lulo </title>
-        <meta name="description" content="Invoice DEX" />
+        <meta name="description" content="Receivables DEX" />
       </Head>
       <HomeView />
     </div>
