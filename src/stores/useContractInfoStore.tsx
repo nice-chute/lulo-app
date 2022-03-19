@@ -5,7 +5,6 @@ import { Program } from "@project-serum/anchor";
 interface ContractInfoStore extends State {
   contract: any[];
   getContract: (
-    publicKey: PublicKey,
     connection: Connection,
     program: Program,
     id: PublicKey
@@ -14,7 +13,7 @@ interface ContractInfoStore extends State {
 
 const useContractInfoStore = create<ContractInfoStore>((set, _get) => ({
   contract: [],
-  getContract: async (publicKey, connection, program, id) => {
+  getContract: async (connection, program, id) => {
     let contract = [];
     try {
       let c = await program.account.contract.fetch(id);

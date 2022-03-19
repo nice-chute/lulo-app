@@ -58,9 +58,7 @@ export const ContractView = ({ id }) => {
   const { getContract } = useContractInfoStore();
 
   useEffect(() => {
-    if (wallet.publicKey) {
-      getContract(wallet.publicKey, connection, program, id);
-    }
+    getContract(connection, program, id);
     console.log(contract);
   }, [wallet, connection, getContract]);
 
