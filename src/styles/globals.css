@@ -66,7 +66,7 @@ a {
 }
 
 .neon-blue-inner {
-  box-shadow: inset 0 0 4px#4666FF;
+  box-shadow: inset 0 0 4px #4666FF;
 }
 
 .min-width-card {
@@ -78,11 +78,11 @@ a {
 }
 
 .neon-orange-inner {
-  box-shadow: inset 0 0 3px#FF5F1F
+  box-shadow: inset 0 0 3px #FF5F1F;
 }
 
 .neon-green-inner {
-  box-shadow: inset 0 0 3px#bcfd49;;
+  box-shadow: inset 0 0 3px #bcfd49;
 }
 
 .border-color-green {
