@@ -1,4 +1,4 @@
-Crypto receivables. 
+Crypto receivables
 
 There are multiple repos to look at (some private for now): 
 
